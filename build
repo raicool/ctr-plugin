@@ -1,0 +1,90 @@
+#!/usr/bin/env bash
+#
+# run this script from the devkitPro msys2 shell
+#
+# https://github.com/raicool
+#
+# arguments:
+# 	clean: deletes CMakeFiles folder
+#   nobuild: do not run cmake generation or make
+#   copy: copies bin/plugin.3gx to citra (environment var CITRA_DATA must be set to citra's data folder)
+#   run-nogui: runs mariokart7 from citra.exe (environment var CITRA must be set to citra.exe's path)
+#   run-qt: runs mariokart7 from citra.exe (environment var CITRA_QT must be set to citra-qt.exe's path)
+
+Reset='\033[0m'           # Text Reset
+Black='\033[0;30m'        # Black
+Red='\033[0;31m'          # Red
+Green='\033[0;32m'        # Green
+Yellow='\033[0;33m'       # Yellow
+Blue='\033[0;34m'         # Blue
+Purple='\033[0;35m'       # Purple
+Cyan='\033[0;36m'         # Cyan
+White='\033[0;37m'        # White
+
+mkdir -p bin/cache
+cd bin/cache
+if [[ "$*" = *"clean"* ]]; then
+	rm -rf CMakeFiles
+fi
+
+if [[ "$*" != *"nobuild"* ]]; then
+	cmake\
+	 -DCMAKE_TOOLCHAIN_FILE:PATH=${DEVKITPRO}/cmake/3DS.cmake\
+	 -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=../\
+	 -DCMAKE_BINARY_DIR=../\
+	 ../../CMakeLists.txt
+	 
+	make --always-make
+fi
+
+cd ../../
+
+# Create .3gx from built elf file
+${DEVKITARM}/bin/3gxtool.exe -s bin/ctr-plugin.elf settings.plgInfo bin/ctr-plugin.3gx
+if [[ "$*" = *"copy"* ]]; then
+	#copy plugin to citra's luma plugin path
+	if [[ -z "${CITRA_DATA}" ]]; then
+		echo -e "${Cyan}Please specify a citra appdata path, otherwise define the environment variable CITRA_DATA with the necessary path\033[0m"
+		read ctrdata
+		cp bin/ctr-plugin.3gx $ctrdata/sdmc/luma/plugins/0004000000030800/ -i
+	else
+		cp bin/ctr-plugin.3gx ${CITRA_DATA}/sdmc/luma/plugins/0004000000030800/ -i
+	fi
+fi
+
+if [[ "$*" = *"run-nogui"* ]]; then
+	echo -e "${Blue}Launching citra..."
+	# run citra.exe with mk7
+	#
+	# in order for the plugin to actually run from citra.exe, you must set plugin-loader to true in ${CITRA_DATA}/config/sdl2-config.ini
+	#
+	# [System]
+	# plugin_loader = true
+	#
+	if [[ -z "${CITRA}" ]]; then
+		echo -e "${Cyan}Please specify a citra.exe path, otherwise define the environment variable CITRA with the necessary path${Reset}"
+		read ctr
+	else
+		ctr=${CITRA}
+	fi
+
+	[ -z "$ctr" ] && exit
+	$ctr "${CITRA_DATA}/sdmc/Nintendo 3DS/00000000000000000000000000000000/00000000000000000000000000000000/title/00040000/00030800/content/00000000.app"
+fi
+
+if [[ "$*" = *"run-qt"* ]]; then
+	echo -e "${Blue}Launching citra-qt..."
+	# run citra-qt.exe with mk7
+	#
+	# Luma3GX plugin loading must be enabled in the settings in order for the plugin to load
+	#
+	if [[ -z "${CITRA_QT}" ]]; then
+		echo -e "${Cyan}Please specify a citra.exe path, otherwise define the environment variable CITRA_QT with the necessary path${Reset}"
+		read ctr
+	else
+		ctr=${CITRA_QT}
+	fi
+	
+	[ -z "$ctr" ] && exit
+	$ctr "${CITRA_DATA}/sdmc/Nintendo 3DS/00000000000000000000000000000000/00000000000000000000000000000000/title/00040000/00030800/content/00000000.app"
+fi
