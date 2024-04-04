@@ -4,11 +4,10 @@ Basic Mario Kart 7 plugin that citra supports
 
 ![mpv-shot0019](https://github.com/raicool/ctr-plugin/assets/56082069/dfc740be-eb74-41a2-a6e6-c3b073136423)
 
-# Requirements
+# Building
+## Prerequisites 
   - This plugin requires the most recent version of CTRPluginFramework installed with devkitPro (https://gitlab.com/thepixellizeross/ctrpluginframework/)
     - see their readme for how to install it or smth
-
-# Building
 ## Windows
   - launch devkitPro's msys2 shell from devkitPro/msys2/msys2_shell.bat
   - set directory to root of ctr-plugin
