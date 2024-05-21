@@ -151,6 +151,13 @@ namespace CTRPluginFramework
         int     Flush(void) const;
 
         /**
+         * \brief Clears a file's content
+         * \return
+         * Either a value in \ref OPResult or an error code from FS service
+         */
+        int     Clear(void) const;
+
+        /**
          * \brief Get the size of the file
          * \return
          * File size if >= 0 \n

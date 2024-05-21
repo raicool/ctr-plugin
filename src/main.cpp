@@ -61,8 +61,6 @@ void patch_process(FwkSettings& settings)
     toggle_touchscreen_force_on();
 }
 
-// This function is called when the process exits
-// Useful to save settings, undo patchs or clean up things
 void on_process_exit(void)
 {
     toggle_touchscreen_force_on();
@@ -70,18 +68,18 @@ void on_process_exit(void)
 
 void init_menu(PluginMenu& menu)
 {
-    // Create your entries here, or elsewhere
-    // You can create your entries whenever/wherever you feel like it
-
-    menu += new MenuEntry("Info", speedometer, "View things such as ghost coin count, air time, speed, acceleration, etc.");
+    menu += new MenuEntry("Info", info);
     menu += new MenuEntry("Replay", replay_ghost, "Time trial ghost");
+    menu += new MenuEntry("Never Save Replay", ghost_disable_overwrite, "Disables new ghosts from being saved");
+    menu += new MenuEntry("Hide Ghost", ghost_hide, "Hide Ghost");
+    //menu += new MenuEntry("Screen Capture", record, "test screen capture, laggy");
 }
 
 namespace CTRPluginFramework
 {
     int main(void)
     {
-        PluginMenu* menu = new PluginMenu("Storm Plugin", 0, 1, 1, "Storm Plugin");
+        PluginMenu* menu = new PluginMenu("Storm Plugin", 0, 1, 2, "Storm Plugin");
 
         // Synnchronize the menu with frame event
         menu->SynchronizeWithFrame(true);
@@ -97,9 +95,4 @@ namespace CTRPluginFramework
         // Exit plugin
         return (0);
     }
-}
-
-int main()
-{
-    return CTRPluginFramework::main();
 }

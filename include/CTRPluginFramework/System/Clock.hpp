@@ -1,6 +1,7 @@
 #ifndef CTRPLUGINFRAMREWORK_CLOCK_HPP
 #define CTRPLUGINFRAMREWORK_CLOCK_HPP
 
+#include "3ds.h"
 #include "CTRPluginFramework/System/Time.hpp"
 
 namespace CTRPluginFramework
@@ -8,14 +9,32 @@ namespace CTRPluginFramework
     class Clock
     {
     public:
-        Clock(void);
-        Clock(Time time);
+        Clock(void)  : _startTime(GetCurrentTime()) {}
+        constexpr Clock(const Time& time) : _startTime(time) {}
 
-        Time    GetElapsedTime(void) const;
-        bool    HasTimePassed(Time time) const;
-        Time    Restart(void);
+        __always_inline Time GetElapsedTime(void) const {
+            return (GetCurrentTime() - _startTime);
+        }
+
+        __always_inline bool HasTimePassed(const Time& time) const {
+            return (GetElapsedTime() >= time);
+        }
+
+        __always_inline Time Restart(void) {
+            const Time now = GetCurrentTime();
+
+            const Time ret = now - _startTime;
+
+            _startTime = now;
+            return (ret);
+        }
     private:
         Time    _startTime;
+
+        static __always_inline Time GetCurrentTime(void)
+        {
+            return Ticks(svcGetSystemTick());
+        }
     };
 }
 

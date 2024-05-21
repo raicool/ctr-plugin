@@ -59,89 +59,89 @@ namespace CTRPluginFramework
         return (Time(amount));
     }
 
-    inline bool operator ==(Time left, Time right)
+    inline bool operator ==(const Time& left, const Time& right)
     {
         return (left.AsTicks() == right.AsTicks());
     }
 
 
-    inline bool operator !=(Time left, Time right)
+    inline bool operator !=(const Time& left, const Time& right)
     {
         return (left.AsTicks() != right.AsTicks());
     }
 
 
-    inline bool operator <(Time left, Time right)
+    inline bool operator <(const Time& left, const Time& right)
     {
         return (left.AsTicks() < right.AsTicks());
     }
 
 
-    inline bool operator >(Time left, Time right)
+    inline bool operator >(const Time& left, const Time& right)
     {
         return (left.AsTicks() > right.AsTicks());
     }
 
 
-    inline bool operator <=(Time left, Time right)
+    inline bool operator <=(const Time& left, const Time& right)
     {
         return (left.AsTicks() <= right.AsTicks());
     }
 
-    inline bool operator >=(Time left, Time right)
+    inline bool operator >=(const Time& left, const Time& right)
     {
         return (left.AsTicks() >= right.AsTicks());
     }
 
-    inline Time operator -(Time right)
+    inline Time operator -(const Time& right)
     {
         return (Ticks(-right.AsTicks()));
     }
 
 
-    inline Time operator +(Time left, Time right)
+    inline Time operator +(const Time& left, const Time& right)
     {
         return (Ticks(left.AsTicks() + right.AsTicks()));
     }
 
 
-    inline Time& operator +=(Time& left, Time right)
+    inline Time& operator +=(Time& left, const Time& right)
     {
         return (left = left + right);
     }
 
 
-    inline Time operator -(Time left, Time right)
+    inline Time operator -(const Time& left, const Time& right)
     {
         return (Ticks(left.AsTicks() - right.AsTicks()));
     }
 
 
-    inline Time& operator -=(Time& left, Time right)
+    inline Time& operator -=(Time& left, const Time& right)
     {
         return left = left - right;
     }
 
 
-    inline Time operator *(Time left, float right)
+    inline Time operator *(const Time& left, float right)
     {
         return (Seconds(left.AsSeconds() * right));
     }
 
 
-    inline Time operator *(Time left, s64 right)
+    inline Time operator *(const Time& left, s64 right)
     {
         return (Microseconds(left.AsMicroseconds() * right));
     }
 
 
-    inline Time operator *(float left, Time right)
+    inline Time operator *(float left, const Time& right)
     {
         return (right * left);
     }
 
 
-    inline Time operator *(s64 left, Time right)
+    inline Time operator *(s64 left, const Time& right)
     {
         return (right * left);
     }
@@ -159,13 +159,13 @@ namespace CTRPluginFramework
     }
 
 
-    inline Time operator /(Time left, float right)
+    inline Time operator /(const Time& left, float right)
     {
         return Seconds(left.AsSeconds() / right);
     }
 
 
-    inline Time operator /(Time left, s64 right)
+    inline Time operator /(const Time& left, s64 right)
     {
         return (Microseconds(left.AsMicroseconds() / right));
     }
@@ -183,19 +183,19 @@ namespace CTRPluginFramework
     }
 
 
-    inline float operator /(Time left, Time right)
+    inline float operator /(const Time& left, const Time& right)
     {
         return (left.AsSeconds() / right.AsSeconds());
     }
 
 
-    inline Time operator %(Time left, Time right)
+    inline Time operator %(const Time& left, const Time& right)
     {
         return (Ticks(left.AsTicks() % right.AsTicks()));
     }
 
 
-    inline Time& operator %=(Time& left, Time right)
+    inline Time& operator %=(Time& left, const Time& right)
     {
         return (left = left % right);
     }
