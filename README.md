@@ -2,7 +2,7 @@
 
 Basic Mario Kart 7 plugin that citra supports
 
-![mpv-shot0019](https://github.com/raicool/ctr-plugin/assets/56082069/dfc740be-eb74-41a2-a6e6-c3b073136423)
+![mpv-shot0019](https://i.imgur.com/iFsXWDD.jpeg)
 
 # Building
 ## Prerequisites 
