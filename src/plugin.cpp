@@ -60,14 +60,6 @@ __attribute__((naked)) void debug_hook_callback()
 	);
 }
 
-__attribute__((naked)) void mute_music_callback()
-{
-	asm volatile
-	(
-		"eor r0, r0 \n"
-	);
-}
-
 void info(MenuEntry* entry)
 {
 	if (entry->WasJustActivated())
