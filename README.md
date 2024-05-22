@@ -2,7 +2,15 @@
 
 Basic Mario Kart 7 plugin that citra supports
 
-![mpv-shot0019](https://github.com/raicool/ctr-plugin/assets/56082069/dfc740be-eb74-41a2-a6e6-c3b073136423)
+![mpv-shot0019](https://i.imgur.com/iFsXWDD.jpeg)
+
+# installing to citra
+1. move ctr-plugin.3gx into the path depending on your game's region below
+- usa: `%appdata%/citra/sdmc/luma/plugins/0004000000030800`
+- europe: `%appdata%/citra/sdmc/luma/plugins/0004000000030700`
+- japan : `%appdata%/citra/sdmc/luma/plugins/0004000000030600`
+2. enable plugin loading within citra at `emulation -> configure -> system -> enable 3gx plugin loader`
+- if the option isnt available, update to the newest version of citra at https://github.com/PabloMK7/citra
 
 # Building
 ## Prerequisites 
