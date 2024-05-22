@@ -17,6 +17,7 @@ static OSDCallback infodisplay;
 // evil assembly subroutines
 __attribute__((naked)) void change_ghost_alpha();
 __attribute__((naked)) void live_replay();
+__attribute__((naked)) void debug_hook_callback();
 
 // ctrpf menu entries
 void info(MenuEntry* entry);
