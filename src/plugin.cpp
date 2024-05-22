@@ -60,6 +60,14 @@ __attribute__((naked)) void debug_hook_callback()
 	);
 }
 
+__attribute__((naked)) void mute_music_callback()
+{
+	asm volatile
+	(
+		"eor r0, r0 \n"
+	);
+}
+
 void info(MenuEntry* entry)
 {
 	if (entry->WasJustActivated())
@@ -322,5 +330,38 @@ void ghost_hide(MenuEntry* entry)
 		{
 			OSD::Notify("overwrite_ghost_alpha hook failed to disable!", Color::Red);
 		}
+	}
+}
+
+void disable_music(MenuEntry* entry)
+{
+	if (entry->WasJustActivated())
+	{
+ 		const std::vector <u32> func_pattern =
+ 		{
+			0xEBFFFFA5, 0xE3500000, 0x1A000002, 0xE594001C, 0xE3A01001, 0xE5C0108A
+ 		};
+ 
+ 		u32 func_ptr = Utils::Search<u32>(0x00100000, 0x00300000, func_pattern);
+
+		svcInvalidateEntireInstructionCache();
+
+		// disables course ambient audio
+		//Process::Write32(0x003DA0CC, 0xe320f000);
+
+		Process::Write32(func_ptr, 0xe320f000);
+	}
+
+	if (!entry->IsActivated())
+	{
+		const std::vector <u32> func_pattern =
+		{
+			0xEBFFFFA5, 0xE3500000, 0x1A000002, 0xE594001C, 0xE3A01001, 0xE5C0108A
+		};
+
+		u32 func_ptr = Utils::Search<u32>(0x00100000, 0x00300000, func_pattern);
+
+		// restore original function (BL nw__snd__internal__driver__StreamSoundPlayer__StreamDataLoadTask__LoadStreamData)
+		Process::Write32(func_ptr, 0xebffffa5);
 	}
 }

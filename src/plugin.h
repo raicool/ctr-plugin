@@ -13,6 +13,7 @@ static race_structure* race;
 static Hook live_replay_hook;
 static Hook overwrite_ghost_alpha_hook;
 static Hook debug_hook;
+static Hook mute_music_hook;
 static OSDCallback infodisplay;
 
 // evil assembly subroutines
@@ -24,3 +25,4 @@ void info(MenuEntry* entry);
 void replay_ghost(MenuEntry* entry);
 void ghost_disable_overwrite(MenuEntry* entry);
 void ghost_hide(MenuEntry* entry);
+void disable_music(MenuEntry* entry);

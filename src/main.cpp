@@ -72,6 +72,7 @@ void init_menu(PluginMenu& menu)
     menu += new MenuEntry("Replay", replay_ghost, "Time trial ghost");
     menu += new MenuEntry("Never Save Replay", ghost_disable_overwrite, "Disables new ghosts from being saved");
     menu += new MenuEntry("Hide Ghost", ghost_hide, "Hide Ghost");
+    menu += new MenuEntry("Disable Music", disable_music, "More accurately, it disables the loading of any .bcstm streams, sequence midis like results music will still play");
     //menu += new MenuEntry("Screen Capture", record, "test screen capture, laggy");
 }
 
