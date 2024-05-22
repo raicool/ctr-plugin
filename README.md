@@ -4,13 +4,22 @@ Basic Mario Kart 7 plugin that citra supports
 
 ![mpv-shot0019](https://i.imgur.com/iFsXWDD.jpeg)
 
-# installing to citra
+# Installing to Citra
 1. move ctr-plugin.3gx into the path depending on your game's region below
 - usa: `%appdata%/citra/sdmc/luma/plugins/0004000000030800`
 - europe: `%appdata%/citra/sdmc/luma/plugins/0004000000030700`
 - japan : `%appdata%/citra/sdmc/luma/plugins/0004000000030600`
 2. enable plugin loading within citra at `emulation -> configure -> system -> enable 3gx plugin loader`
 - if the option isnt available, update to the newest version of citra at https://github.com/PabloMK7/citra
+
+# Installing to BizHawk (Recommended)
+1. if you dont already have it, install the devbuild version of bizhawk from (https://gitlab.com/TASVideos/BizHawk/-/artifacts), as normal builds of bizhawk do not have 3ds support
+1. move ctr-plugin.3gx into the path depending on your game's region below (replace [bizhawk directory] with the location of your bizhawk installation of course)
+- usa: `[bizhawk directory]/3DS/User/sdmc/luma/plugins/0004000000030800`
+- europe: `[bizhawk directory]/3DS/User/luma/plugins/0004000000030700`
+- japan : `[bizhawk directory]/3DS/User/luma/plugins/0004000000030600`
+2. launch mario kart 7, and then enable plugin loading at `3DS -> Settings -> Sync Settings -> Enable 3GX Plugin Loader`
+3. reboot the game
 
 # Building
 ## Prerequisites 
