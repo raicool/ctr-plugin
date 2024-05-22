@@ -258,6 +258,8 @@ void ghost_disable_overwrite(MenuEntry* entry)
 
 		if (func_ptr)
 		{
+			svcInvalidateEntireInstructionCache();
+
 			// System::SaveDataManager::calcInner_(int) + 0xa8
 			// disable writing new ghosts by replacing instruction with an NOP
 			Process::Write32(func_ptr, 0xe320f000);
@@ -277,6 +279,8 @@ void ghost_disable_overwrite(MenuEntry* entry)
 		};
 
 		u32 func_ptr = Utils::Search<u32>(0x00100000, 0x00300000, func_pattern);
+
+		svcInvalidateEntireInstructionCache();
 
 		// restore old instruction
 		Process::Write32(func_ptr, 0xeb000061);
