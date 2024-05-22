@@ -56,7 +56,7 @@ __attribute__((naked)) void debug_hook_callback()
 		"pop   {r5}       \n"
 		"bx    lr         \n"
 		: [out]"=m"(input_frame_count)
-		: [in]"r"(race)
+		: [in]"r"(player)
 	);
 }
 
@@ -83,7 +83,7 @@ void info(MenuEntry* entry)
 		if (debug_hook.Enable() == HookResult::Success)
 		{
 			OSD::Notify("debug hook enabled!", Color::LimeGreen);
-			OSD::Notify(Utils::Format("%p", debug_hook_callback), Color::Gray);
+//			OSD::Notify(Utils::Format("%p", debug_hook_callback), Color::Gray);
 		}
 		else
 		{
@@ -93,10 +93,9 @@ void info(MenuEntry* entry)
 		}
 	}
 
-	race = get_race_ptr();
 	player = get_player_ptr();
 
-	if (race && player)
+	if (player && player)
 	{
 		infodisplay = [](const Screen& screen)
 		{
@@ -106,7 +105,7 @@ void info(MenuEntry* entry)
 			static u32 miniturbo_old;
 			static bool screen_switch;
 
-			player_kmh = race->player_speed * 10.376756f;
+			player_kmh = player->player_speed * 10.376756f;
 
 			// switch the OSD render screen whenever dpad down is pressed
 			if (Controller::IsKeyPressed(DPadDown))
@@ -116,9 +115,9 @@ void info(MenuEntry* entry)
 
 			if (screen.IsTop ^ screen_switch)
 			{
-				if (race->miniturbo_type == 67)
+				if (player->miniturbo_type == 67)
 				{
-					screen.Draw(Utils::Format("(+%i)", race->miniturbo - miniturbo_old), 10, 40, Color::Gray);
+					screen.Draw(Utils::Format("(+%i)", player->miniturbo - miniturbo_old), 10, 40, Color::Gray);
 
 					/*
 						MT charges at value > 90
@@ -127,33 +126,33 @@ void info(MenuEntry* entry)
 
 					Color mt_text_color;
 
-					if (race->miniturbo < 90)
+					if (player->miniturbo < 90)
 					{
 						mt_text_color = Color::Gray;
 					}
 
 					// blue mt
-					if (race->miniturbo >= 90 && race->miniturbo < 230)
+					if (player->miniturbo >= 90 && player->miniturbo < 230)
 					{
 						mt_text_color = Color::SkyBlue;
 					}
 
 					// red mt
-					if (race->miniturbo >= 230)
+					if (player->miniturbo >= 230)
 					{
 						mt_text_color = Color::Red;
 					}
 
-					screen.Draw(Utils::Format((race->miniturbo < 100) ? "MT : %i/230" : "MT :  %i/230", race->miniturbo), 10, 50, mt_text_color);
+					screen.Draw(Utils::Format((player->miniturbo < 100) ? "MT : %i/230" : "MT :  %i/230", player->miniturbo), 10, 50, mt_text_color);
 				}
 
 				// miniturbo charge value wrapped around, so just print this instead
-				if (race->miniturbo_type >= 68)
+				if (player->miniturbo_type >= 68)
 				{
 					screen.Draw("MT : 255/230", 10, 50, Color::Red);
 				}
 
-				screen.Draw(Utils::Format("Air : %i", race->player_airtime), 10, 60, (race->player_airtime == 0) ? Color::Red : Color::LimeGreen);
+				screen.Draw(Utils::Format("Air : %i", player->player_airtime), 10, 60, (player->player_airtime == 0) ? Color::Red : Color::LimeGreen);
 
 				screen.Draw(Utils::Format("%f km/h", player_kmh), 10, 70);
 
@@ -174,19 +173,11 @@ void info(MenuEntry* entry)
 
 				screen.Draw(Utils::Format("Frame %i", input_frame_count), 10, 190, Color::SkyBlue);
 
-				if (race->boosting)
-				{
-					screen.Draw("Boost : Yes", 10, 200, Color::LimeGreen);
-				}
-				else
-				{
-					screen.Draw("Boost : No", 10, 200, Color::Red);
-				}
+				screen.Draw(Utils::Format("Boost : %i", player->boost_duration), 10, 200, player->boosting ? Color::LimeGreen : Color::Red);
+				screen.Draw(Utils::Format("KCL Type : %s", kcl_type_name_from_char(player->ground_type_id)), 10, 210, Color::DeepSkyBlue);
+				screen.Draw(Utils::Format("(%.3f, %.3f, %.3f)", player->player_x, player->player_y, player->player_z), 10, 220, Color::DodgerBlue);
 
-				screen.Draw(Utils::Format("KCL Type : %s", kcl_type_name_from_char(race->ground_type_id)), 10, 210, Color::DeepSkyBlue);
-				screen.Draw(Utils::Format("(%.3f, %.3f, %.3f)", race->player_x, race->player_y, race->player_z), 10, 220, Color::DodgerBlue);
-
-				miniturbo_old = race->miniturbo;
+				miniturbo_old = player->miniturbo;
 				player_old_kmh = player_kmh;
 			}
 
@@ -194,7 +185,7 @@ void info(MenuEntry* entry)
 		};
 	}
 
-	if (!race || !player || !is_racing() || !entry->IsActivated())
+	if (!player || !player || !is_racing() || !entry->IsActivated())
 	{
 		OSD::Stop(infodisplay);
 		input_frame_count = 0;

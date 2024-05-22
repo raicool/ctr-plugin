@@ -23,23 +23,23 @@ bool is_racing()
 	return (seek_ptr(0x14000084, { 0x316c, 0x118 }) != 0);
 }
 
-race_structure* get_race_ptr()
+player_structure* get_player_ptr()
 {
 	if (is_racing())
 	{
-		return (race_structure*)seek_ptr(0x140002F4, { 0x14, 0x518, 0x1c });
+		return (player_structure*)seek_ptr(0x140002F4, { 0x14, 0x518, 0x1c });
 	}
 
 	return nullptr;
 }
 
-player_structure* get_player_ptr()
+unknown_race_structure* get_unk_ptr()
 {
 	u32 ptr;
 	if (is_racing())
 	{
 		Process::Read32(0x0065c528, ptr);
-		return (player_structure*)ptr;
+		return (unknown_race_structure*)ptr;
 		//Process::Read8(data + 0xbc2, player_coins);
 		//Process::Read8(data + 0xc32, ghost_coins);
 	}

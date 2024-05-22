@@ -8,7 +8,6 @@
 using namespace CTRPluginFramework;
 
 static player_structure* player;
-static race_structure* race;
 
 static Hook live_replay_hook;
 static Hook overwrite_ghost_alpha_hook;

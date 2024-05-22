@@ -21,9 +21,9 @@ uint32_t seek_ptr(uint32_t first_ptr, std::vector<int16_t> offset);
 
 bool is_racing();
 
-race_structure* get_race_ptr();
-
 player_structure* get_player_ptr();
+
+unknown_race_structure* get_unk_ptr();
 
 void write_speed(u32 speed);
 
