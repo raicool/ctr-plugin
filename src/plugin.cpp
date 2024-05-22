@@ -273,7 +273,7 @@ void ghost_disable_overwrite(MenuEntry* entry)
 	{
 		const std::vector <u32> func_pattern =
 		{
-			0xeb000061, 0xe320f000, 0xe320f000, 0xea000008, 0xe1a01004
+			0xe320f000, 0xe320f000, 0xe320f000, 0xea000008, 0xe1a01004
 		};
 
 		u32 func_ptr = Utils::Search<u32>(0x00100000, 0x00300000, func_pattern);
@@ -348,10 +348,12 @@ void disable_music(MenuEntry* entry)
 	{
 		const std::vector <u32> func_pattern =
 		{
-			0xEBFFFFA5, 0xE3500000, 0x1A000002, 0xE594001C, 0xE3A01001, 0xE5C0108A
+			0xe320f000, 0xE3500000, 0x1A000002, 0xE594001C, 0xE3A01001, 0xE5C0108A
 		};
 
 		u32 func_ptr = Utils::Search<u32>(0x00100000, 0x00300000, func_pattern);
+
+		svcInvalidateEntireInstructionCache();
 
 		// restore original function (BL nw__snd__internal__driver__StreamSoundPlayer__StreamDataLoadTask__LoadStreamData)
 		Process::Write32(func_ptr, 0xebffffa5);
