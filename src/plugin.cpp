@@ -76,7 +76,7 @@ void render_info()
 		screen_switch = !screen_switch;
 	}
 
-	const Screen screen = screen_switch ? OSD::GetTopScreen() : OSD::GetBottomScreen();
+	const Screen screen = screen_switch ? OSD::GetBottomScreen() : OSD::GetTopScreen();
 
 	if (player->miniturbo_type == 67)
 	{

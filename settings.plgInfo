@@ -3,11 +3,11 @@ Author: Rai
 Version: # Plugin version
     Major: 1
     Minor: 2
-    Revision: 1
+    Revision: 2
 
 Targets: # Low TitleId of games which are compatibles with this plugin (0 for all)
 
-Title: Storm Plugin
+Title: TAS Plugin
 
 Summary: various mk7 tools
 
