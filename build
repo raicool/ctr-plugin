@@ -22,11 +22,13 @@ Purple='\033[0;35m'       # Purple
 Cyan='\033[0;36m'         # Cyan
 White='\033[0;37m'        # White
 
-mkdir -p bin/cache
-cd bin/cache
 if [[ "$*" = *"clean"* ]]; then
 	rm -rf CMakeFiles
+	rm -rf bin
 fi
+
+mkdir -p bin/cache
+cd bin/cache
 
 if [[ "$*" != *"nobuild"* ]]; then
 	cmake\

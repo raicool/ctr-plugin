@@ -82,7 +82,7 @@ namespace CTRPluginFramework
 {
     int main(void)
     {
-        PluginMenu* menu = new PluginMenu("Storm Plugin", 1, 2, 1, "Storm Plugin");
+        PluginMenu* menu = new PluginMenu("Storm Plugin", 1, 2, 2, "Storm Plugin");
 
         // Synchronize the menu with frame event
         menu->SynchronizeWithFrame(true);

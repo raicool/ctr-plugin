@@ -78,41 +78,41 @@ void render_info()
 
 	const Screen screen = screen_switch ? OSD::GetBottomScreen() : OSD::GetTopScreen();
 
-	if (player->miniturbo_type == 67)
+	if (player->miniturbo)
 	{
-		screen.Draw(Utils::Format("(+%i)", player->miniturbo - miniturbo_old), 10, 40, Color::Gray);
+		screen.Draw(Utils::Format("(+%f)", player->miniturbo - miniturbo_old), 10, 40, Color::Gray);
 
 		/*
-			MT charges at value > 90
-			SMT charges at value > 230
+			MT charges at value > 220
+			SMT charges at value > 460
 		*/
 
 		Color mt_text_color;
 
-		if (player->miniturbo < 90)
+		if (player->miniturbo < 220)
 		{
 			mt_text_color = Color::Gray;
-		}
 
-		// blue mt
-		if (player->miniturbo >= 90 && player->miniturbo < 230)
+			screen.Draw(Utils::Format((player->miniturbo < 100) ? "MT :  %.2f/220.00" : "MT : %.2f/220.00", player->miniturbo), 10, 50, mt_text_color);
+		}
+		else
 		{
-			mt_text_color = Color::SkyBlue;
+			// blue mt
+			if (player->miniturbo >= 220 && player->miniturbo < 460)
+			{
+				mt_text_color = Color::SkyBlue;
+			}
+
+			// red mt
+			if (player->miniturbo >= 460)
+			{
+				mt_text_color = Color::Red;
+			}
+
+			screen.Draw(Utils::Format((player->miniturbo < 100) ? "MT :  %.2f/460.00" : "MT : %.2f/460.00", player->miniturbo), 10, 50, mt_text_color);
 		}
 
-		// red mt
-		if (player->miniturbo >= 230)
-		{
-			mt_text_color = Color::Red;
-		}
-
-		screen.Draw(Utils::Format((player->miniturbo < 100) ? "MT : %i/230" : "MT :  %i/230", player->miniturbo), 10, 50, mt_text_color);
-	}
-
-	// miniturbo charge value wrapped around, so just print this instead
-	if (player->miniturbo_type >= 68)
-	{
-		screen.Draw("MT : 255/230", 10, 50, Color::Red);
+		
 	}
 
 	screen.Draw(Utils::Format("Air : %i", player->player_airtime), 10, 60, (player->player_airtime == 0) ? Color::Red : Color::LimeGreen);
