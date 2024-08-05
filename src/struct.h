@@ -7,7 +7,8 @@
 */
 struct PACKED player_structure
 {
-	char  data_1[0x24];   // 
+	char  data_1[0x20];   // 
+	float angle;          //
 	float player_x;       // 
 	float player_y;       // 
 	float player_z;       // 

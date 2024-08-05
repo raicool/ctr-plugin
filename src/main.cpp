@@ -84,18 +84,13 @@ namespace CTRPluginFramework
     {
         PluginMenu* menu = new PluginMenu("Storm Plugin", 1, 2, 2, "Storm Plugin");
 
-        // Synchronize the menu with frame event
         menu->SynchronizeWithFrame(true);
 
-        // Init our menu entries & folders
         init_menu(*menu);
 
-        // Launch menu and mainloop
         menu->Run();
 
         delete menu;
-
-        // Exit plugin
         return (0);
     }
 }

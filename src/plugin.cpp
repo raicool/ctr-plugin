@@ -80,7 +80,7 @@ void render_info()
 
 	if (player->miniturbo)
 	{
-		screen.Draw(Utils::Format("(+%f)", player->miniturbo - miniturbo_old), 10, 40, Color::Gray);
+		screen.Draw(Utils::Format("(+%f)", player->miniturbo - miniturbo_old), 10, 140, Color::Gray);
 
 		/*
 			MT charges at value > 220
@@ -93,7 +93,7 @@ void render_info()
 		{
 			mt_text_color = Color::Gray;
 
-			screen.Draw(Utils::Format((player->miniturbo < 100) ? "MT :  %.2f/220.00" : "MT : %.2f/220.00", player->miniturbo), 10, 50, mt_text_color);
+			screen.Draw(Utils::Format((player->miniturbo < 100) ? "MT :  %.2f/220.00" : "MT : %.2f/220.00", player->miniturbo), 10, 150, mt_text_color);
 		}
 		else
 		{
@@ -109,29 +109,29 @@ void render_info()
 				mt_text_color = Color::Red;
 			}
 
-			screen.Draw(Utils::Format((player->miniturbo < 100) ? "MT :  %.2f/460.00" : "MT : %.2f/460.00", player->miniturbo), 10, 50, mt_text_color);
+			screen.Draw(Utils::Format((player->miniturbo < 100) ? "MT :  %.2f/460.00" : "MT : %.2f/460.00", player->miniturbo), 10, 150, mt_text_color);
 		}
 
 		
 	}
 
-	screen.Draw(Utils::Format("Air : %i", player->player_airtime), 10, 60, (player->player_airtime == 0) ? Color::Red : Color::LimeGreen);
+	screen.Draw(Utils::Format("Air : %i", player->player_airtime), 10, 160, (player->player_airtime == 0) ? Color::Red : Color::LimeGreen);
 
-	screen.Draw(Utils::Format("%f km/h", player_kmh), 10, 70);
+	screen.Draw(Utils::Format("%f km/h", player_kmh), 10, 170);
 
 	kmh_delta = player_kmh - player_old_kmh;
 
 	if (kmh_delta == 0)
 	{
-		screen.Draw(Utils::Format("( %f)", kmh_delta), 10, 80, Color::Gray);
+		screen.Draw(Utils::Format("( %f)", kmh_delta), 10, 180, Color::Gray);
 	}
 	else if (kmh_delta >= 0)
 	{
-		screen.Draw(Utils::Format("(+%f)", kmh_delta), 10, 80, Color::ForestGreen);
+		screen.Draw(Utils::Format("(+%f)", kmh_delta), 10, 180, Color::ForestGreen);
 	}
 	else
 	{
-		screen.Draw(Utils::Format("(%f)", kmh_delta), 10, 80, Color::Maroon);
+		screen.Draw(Utils::Format("(%f)", kmh_delta), 10, 180, Color::Maroon);
 	}
 
 	screen.Draw(Utils::Format("Frame %i", input_frame_count), 10, 190, Color::SkyBlue);

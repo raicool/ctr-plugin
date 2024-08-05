@@ -1,0 +1,3 @@
+[submodule "include/sead"]
+	path = include/sead
+	url = https://github.com/open-ead/sead
