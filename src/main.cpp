@@ -70,6 +70,7 @@ void init_menu(PluginMenu& menu)
 {
     menu += new MenuEntry("Info", info);
     menu += new MenuEntry("Replay", replay_ghost, "Time trial ghost");
+    menu += new MenuEntry("Replay Old", replay_ghost_old, "darkflare's old buggy live replay code");
     menu += new MenuEntry("Never Save Replay", ghost_disable_overwrite, "Disables new ghosts from being saved");
     menu += new MenuEntry("Hide Ghost", ghost_hide, "Hide Ghost");
     menu += new MenuEntry("Disable Music", disable_music, "More accurately, it disables the loading of any .bcstm streams, sequence midis like results music will still play");
@@ -82,7 +83,7 @@ namespace CTRPluginFramework
     {
         PluginMenu* menu = new PluginMenu("Storm Plugin", 1, 2, 1, "Storm Plugin");
 
-        // Synnchronize the menu with frame event
+        // Synchronize the menu with frame event
         menu->SynchronizeWithFrame(true);
 
         // Init our menu entries & folders

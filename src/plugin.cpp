@@ -60,6 +60,90 @@ __attribute__((naked)) void debug_hook_callback()
 	);
 }
 
+void render_info()
+{
+	static float player_kmh;
+	static float player_old_kmh;
+	static float kmh_delta;
+	static u32 miniturbo_old;
+	static bool screen_switch;
+
+	player_kmh = player->player_speed * 10.376756f;
+
+	// switch the OSD render screen whenever dpad down is pressed
+	if (Controller::IsKeyPressed(DPadDown))
+	{
+		screen_switch = !screen_switch;
+	}
+
+	const Screen screen = screen_switch ? OSD::GetTopScreen() : OSD::GetBottomScreen();
+
+	if (player->miniturbo_type == 67)
+	{
+		screen.Draw(Utils::Format("(+%i)", player->miniturbo - miniturbo_old), 10, 40, Color::Gray);
+
+		/*
+			MT charges at value > 90
+			SMT charges at value > 230
+		*/
+
+		Color mt_text_color;
+
+		if (player->miniturbo < 90)
+		{
+			mt_text_color = Color::Gray;
+		}
+
+		// blue mt
+		if (player->miniturbo >= 90 && player->miniturbo < 230)
+		{
+			mt_text_color = Color::SkyBlue;
+		}
+
+		// red mt
+		if (player->miniturbo >= 230)
+		{
+			mt_text_color = Color::Red;
+		}
+
+		screen.Draw(Utils::Format((player->miniturbo < 100) ? "MT : %i/230" : "MT :  %i/230", player->miniturbo), 10, 50, mt_text_color);
+	}
+
+	// miniturbo charge value wrapped around, so just print this instead
+	if (player->miniturbo_type >= 68)
+	{
+		screen.Draw("MT : 255/230", 10, 50, Color::Red);
+	}
+
+	screen.Draw(Utils::Format("Air : %i", player->player_airtime), 10, 60, (player->player_airtime == 0) ? Color::Red : Color::LimeGreen);
+
+	screen.Draw(Utils::Format("%f km/h", player_kmh), 10, 70);
+
+	kmh_delta = player_kmh - player_old_kmh;
+
+	if (kmh_delta == 0)
+	{
+		screen.Draw(Utils::Format("( %f)", kmh_delta), 10, 80, Color::Gray);
+	}
+	else if (kmh_delta >= 0)
+	{
+		screen.Draw(Utils::Format("(+%f)", kmh_delta), 10, 80, Color::ForestGreen);
+	}
+	else
+	{
+		screen.Draw(Utils::Format("(%f)", kmh_delta), 10, 80, Color::Maroon);
+	}
+
+	screen.Draw(Utils::Format("Frame %i", input_frame_count), 10, 190, Color::SkyBlue);
+
+	screen.Draw(Utils::Format("Boost : %i", player->boost_duration), 10, 200, player->boosting ? Color::LimeGreen : Color::Red);
+	screen.Draw(Utils::Format("KCL Type : %s", kcl_type_name_from_char(player->ground_type_id)), 10, 210, Color::DeepSkyBlue);
+	screen.Draw(Utils::Format("(%.3f, %.3f, %.3f)", player->player_x, player->player_y, player->player_z), 10, 220, Color::DodgerBlue);
+
+	miniturbo_old = player->miniturbo;
+	player_old_kmh = player_kmh;
+}
+
 void info(MenuEntry* entry)
 {
 	if (entry->WasJustActivated())
@@ -95,104 +179,14 @@ void info(MenuEntry* entry)
 
 	player = get_player_ptr();
 
-	if (player && player)
+	if (player)
 	{
-		infodisplay = [](const Screen& screen)
-		{
-			static float player_kmh;
-			static float player_old_kmh;
-			static float kmh_delta;
-			static u32 miniturbo_old;
-			static bool screen_switch;
-
-			player_kmh = player->player_speed * 10.376756f;
-
-			// switch the OSD render screen whenever dpad down is pressed
-			if (Controller::IsKeyPressed(DPadDown))
-			{
-				screen_switch = !screen_switch;
-			}
-
-			if (screen.IsTop ^ screen_switch)
-			{
-				if (player->miniturbo_type == 67)
-				{
-					screen.Draw(Utils::Format("(+%i)", player->miniturbo - miniturbo_old), 10, 40, Color::Gray);
-
-					/*
-						MT charges at value > 90
-						SMT charges at value > 230
-					*/
-
-					Color mt_text_color;
-
-					if (player->miniturbo < 90)
-					{
-						mt_text_color = Color::Gray;
-					}
-
-					// blue mt
-					if (player->miniturbo >= 90 && player->miniturbo < 230)
-					{
-						mt_text_color = Color::SkyBlue;
-					}
-
-					// red mt
-					if (player->miniturbo >= 230)
-					{
-						mt_text_color = Color::Red;
-					}
-
-					screen.Draw(Utils::Format((player->miniturbo < 100) ? "MT : %i/230" : "MT :  %i/230", player->miniturbo), 10, 50, mt_text_color);
-				}
-
-				// miniturbo charge value wrapped around, so just print this instead
-				if (player->miniturbo_type >= 68)
-				{
-					screen.Draw("MT : 255/230", 10, 50, Color::Red);
-				}
-
-				screen.Draw(Utils::Format("Air : %i", player->player_airtime), 10, 60, (player->player_airtime == 0) ? Color::Red : Color::LimeGreen);
-
-				screen.Draw(Utils::Format("%f km/h", player_kmh), 10, 70);
-
-				kmh_delta = player_kmh - player_old_kmh;
-
-				if (kmh_delta == 0)
-				{
-					screen.Draw(Utils::Format("( %f)", kmh_delta), 10, 80, Color::Gray);
-				}
-				else if (kmh_delta >= 0)
-				{
-					screen.Draw(Utils::Format("(+%f)", kmh_delta), 10, 80, Color::ForestGreen);
-				}
-				else 
-				{
-					screen.Draw(Utils::Format("(%f)", kmh_delta), 10, 80, Color::Maroon);
-				}
-
-				screen.Draw(Utils::Format("Frame %i", input_frame_count), 10, 190, Color::SkyBlue);
-
-				screen.Draw(Utils::Format("Boost : %i", player->boost_duration), 10, 200, player->boosting ? Color::LimeGreen : Color::Red);
-				screen.Draw(Utils::Format("KCL Type : %s", kcl_type_name_from_char(player->ground_type_id)), 10, 210, Color::DeepSkyBlue);
-				screen.Draw(Utils::Format("(%.3f, %.3f, %.3f)", player->player_x, player->player_y, player->player_z), 10, 220, Color::DodgerBlue);
-
-				miniturbo_old = player->miniturbo;
-				player_old_kmh = player_kmh;
-			}
-
-			return true;
-		};
+		render_info();
 	}
 
-	if (!player || !player || !is_racing() || !entry->IsActivated())
+	if (!player || !is_racing() || !entry->IsActivated())
 	{
-		OSD::Stop(infodisplay);
 		input_frame_count = 0;
-	}
-	else
-	{
-		OSD::Run(infodisplay);
 	}
 }
 
@@ -236,6 +230,35 @@ void replay_ghost(MenuEntry* entry)
 	}
 }
 
+void replay_ghost_old(MenuEntry* entry)
+{
+	u8 char_0x119 = 0;
+	u32 some_int = 0;
+	u32 int_0x208 = 0;
+
+	if (is_racing() && Process::Read32(0x0FFFF5D4, data) && Process::Read32(data - 0x00000004, data) && Process::Read32(data + 0x00000018, data))
+	{
+		if (Process::Read32(0x14000084, offset) && Process::Read32(offset + 0x0000316C, offset) && FCRAM_0_RANGE(offset))
+		{
+			//Process::Read8(offset + 0x00000119, char_0x119);
+			//Process::Write8(offset + 0x00000119, 0);
+
+			/*
+				target camera and model to ghost instead of player
+			*/
+			Process::Read32(data + 0x00000208, int_0x208);
+			Process::Write32(data + 0x00000208, 0x00010001);
+
+			if (Process::Read32(0x0065DA44, data) && Process::Read32(data + 0x000020E0, data))
+			{
+				// Move player to above finish line
+				Process::Read32(data + 0x24, some_int);
+				Process::Write32(data + 0x24, 0x49000000);
+			}
+		}
+	}
+}
+
 void ghost_disable_overwrite(MenuEntry* entry)
 {
 	if (entry->WasJustActivated())
@@ -257,7 +280,7 @@ void ghost_disable_overwrite(MenuEntry* entry)
 		}
 		else
 		{
-			OSD::Notify("hide ghost failed to enable!", Color::Red);
+			OSD::Notify("never save ghosts failed to enable!", Color::Red);
 			entry->Disable();
 		}
 	}

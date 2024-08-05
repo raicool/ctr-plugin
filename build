@@ -5,10 +5,10 @@
 # https://github.com/raicool
 #
 # arguments:
-# 	clean: deletes CMakeFiles folder
+# 	clean: delete CMakeFiles folder
 #   nobuild: do not run cmake generation or make
 #   copy: copies bin/plugin.3gx to citra (environment var CITRA_DATA must be set to citra's data folder)
-#   run-nogui: runs mariokart7 from citra.exe (environment var CITRA must be set to citra.exe's path)
+#   run-headless: runs mariokart7 from citra.exe (environment var CITRA must be set to citra.exe's path)
 #   run-qt: runs mariokart7 from citra-qt.exe (environment var CITRA_QT must be set to citra-qt.exe's path)
 
 make_ret=0
@@ -35,7 +35,7 @@ if [[ "$*" != *"nobuild"* ]]; then
 	 -DCMAKE_BINARY_DIR=../\
 	 ../../CMakeLists.txt
 	 
-	make --always-make
+	make
 	make_ret=$?
 fi
 
