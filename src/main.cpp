@@ -70,6 +70,7 @@ void init_menu(PluginMenu& menu)
 {
     menu += new MenuEntry("Info", info);
     menu += new MenuEntry("Replay", replay_ghost, "Time trial ghost");
+    menu += new MenuEntry("16:9 Aspect Ratio", new_aspect_ratio, "Sets 3d aspect ratio to the standard 16:9 that most monitors use");
     //menu += new MenuEntry("Replay Old", replay_ghost_old, "darkflare's old buggy live replay code");
     //menu += new MenuEntry("Always Save Replay", ghost_enable_overwrite, "Always allows new ghosts to being saved, even if its slower than the fastest time");
     menu += new MenuEntry("Never Save Replay", ghost_disable_overwrite, "Disables new ghosts from being saved");

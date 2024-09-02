@@ -2,6 +2,8 @@
 
 #include <CTRPluginFramework.hpp>
 
+#include <sead/include/math/seadMathCalcCommon.h>
+
 using namespace CTRPluginFramework;
 
 static u32 original_speed[0x2D];
@@ -112,6 +114,26 @@ const char* kcl_type_name_from_char(char type)
 
 		default: return "???"; break;
 	}
+}
+
+float distf(const float p1, const float p2)
+{
+	return sead::MathCalcCommon<f32>::abs(p1 - p2);
+}
+
+float dist2f(const sead::Vector2f p1, const sead::Vector2f p2)
+{
+	float x = p1.x - p2.x;
+	float y = p1.y - p2.y;
+	return sead::MathCalcCommon<f32>::sqrt((x * x) + (y * y));
+}
+
+float dist3f(const sead::Vector3f p1, const sead::Vector3f p2)
+{
+	float x = p1.x - p2.x;
+	float y = p1.y - p2.y;
+	float z = p1.z - p2.z;
+	return sead::MathCalcCommon<f32>::sqrt((x * x) + (y * y) + (z * z));
 }
 
 u32 get_input_frame()

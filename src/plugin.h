@@ -26,3 +26,4 @@ void replay_ghost_old(MenuEntry* entry);
 void ghost_disable_overwrite(MenuEntry* entry);
 void ghost_hide(MenuEntry* entry);
 void disable_music(MenuEntry* entry);
+void new_aspect_ratio(MenuEntry* entry);

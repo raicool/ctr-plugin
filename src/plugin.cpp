@@ -7,6 +7,9 @@
 #include "struct.h"
 #include "util.h"
 
+#include "sead/include/basis/seadTypes.h"
+#include "sead/include/math/seadVector.hpp"
+
 using namespace CTRPluginFramework;
 
 //
@@ -42,8 +45,6 @@ __attribute__((naked)) void live_replay()
 }
 
 static u32 input_frame_count;
-
-// TODO: optimize (probably not necessary)
 __attribute__((naked)) void debug_hook_callback()
 {
 	asm volatile
@@ -62,12 +63,15 @@ __attribute__((naked)) void debug_hook_callback()
 
 void render_info()
 {
+	static float player_old_x;
+	static float player_old_y;
+	static float player_old_z;
 	static float player_kmh;
 	static float player_old_kmh;
 	static float kmh_delta;
-	static u32 miniturbo_old;
+	static float miniturbo_old;
 	static bool screen_switch;
-
+	
 	player_kmh = player->player_speed * 10.376756f;
 
 	// switch the OSD render screen whenever dpad down is pressed
@@ -80,12 +84,7 @@ void render_info()
 
 	if (player->miniturbo)
 	{
-		screen.Draw(Utils::Format("(+%f)", player->miniturbo - miniturbo_old), 10, 140, Color::Gray);
-
-		/*
-			MT charges at value > 220
-			SMT charges at value > 460
-		*/
+		screen.Draw(Utils::Format("(+%f)", player->miniturbo - miniturbo_old), 10, 110, Color::Gray);
 
 		Color mt_text_color;
 
@@ -93,7 +92,7 @@ void render_info()
 		{
 			mt_text_color = Color::Gray;
 
-			screen.Draw(Utils::Format((player->miniturbo < 100) ? "MT :  %.2f/220.00" : "MT : %.2f/220.00", player->miniturbo), 10, 150, mt_text_color);
+			screen.Draw(Utils::Format((player->miniturbo < 100) ? "MT :  %.2f/220.00" : "MT : %.2f/220.00", player->miniturbo), 10, 120, mt_text_color);
 		}
 		else
 		{
@@ -109,39 +108,38 @@ void render_info()
 				mt_text_color = Color::Red;
 			}
 
-			screen.Draw(Utils::Format((player->miniturbo < 100) ? "MT :  %.2f/460.00" : "MT : %.2f/460.00", player->miniturbo), 10, 150, mt_text_color);
+			screen.Draw(Utils::Format((player->miniturbo < 100) ? "MT :  %.2f/460.00" : "MT : %.2f/460.00", player->miniturbo), 10, 120, mt_text_color);
 		}
-
-		
 	}
 
-	screen.Draw(Utils::Format("Air : %i", player->player_airtime), 10, 160, (player->player_airtime == 0) ? Color::Red : Color::LimeGreen);
-
-	screen.Draw(Utils::Format("%f km/h", player_kmh), 10, 170);
+	screen.Draw(Utils::Format("%f km/h", player_kmh), 10, 150);
 
 	kmh_delta = player_kmh - player_old_kmh;
 
 	if (kmh_delta == 0)
 	{
-		screen.Draw(Utils::Format("( %f)", kmh_delta), 10, 180, Color::Gray);
+		screen.Draw(Utils::Format("( %f)", kmh_delta), 10, 160, Color::Gray);
 	}
 	else if (kmh_delta >= 0)
 	{
-		screen.Draw(Utils::Format("(+%f)", kmh_delta), 10, 180, Color::ForestGreen);
+		screen.Draw(Utils::Format("(+%f)", kmh_delta), 10, 160, Color::ForestGreen);
 	}
 	else
 	{
-		screen.Draw(Utils::Format("(%f)", kmh_delta), 10, 180, Color::Maroon);
+		screen.Draw(Utils::Format("(%f)", kmh_delta), 10, 160, Color::Maroon);
 	}
 
-	screen.Draw(Utils::Format("Frame %i", input_frame_count), 10, 190, Color::SkyBlue);
-
+	screen.Draw(Utils::Format("Frame %i", input_frame_count), 10, 180, Color::SkyBlue);
+	screen.Draw(Utils::Format("Air : %i", player->player_airtime), 10, 190, (player->player_airtime == 0) ? Color::Red : Color::LimeGreen);
 	screen.Draw(Utils::Format("Boost : %i", player->boost_duration), 10, 200, player->boosting ? Color::LimeGreen : Color::Red);
 	screen.Draw(Utils::Format("KCL Type : %s", kcl_type_name_from_char(player->ground_type_id)), 10, 210, Color::DeepSkyBlue);
 	screen.Draw(Utils::Format("(%.3f, %.3f, %.3f)", player->player_x, player->player_y, player->player_z), 10, 220, Color::DodgerBlue);
 
 	miniturbo_old = player->miniturbo;
 	player_old_kmh = player_kmh;
+	player_old_x = player->player_x;
+	player_old_y = player->player_y;
+	player_old_z = player->player_z;
 }
 
 void info(MenuEntry* entry)
@@ -375,5 +373,61 @@ void disable_music(MenuEntry* entry)
 
 		// restore original function (BL nw__snd__internal__driver__StreamSoundPlayer__StreamDataLoadTask__LoadStreamData)
 		Process::Write32(func_ptr, 0xebffffa5);
+	}
+}
+
+void new_aspect_ratio(MenuEntry* entry)
+{
+	if (entry->WasJustActivated())
+	{
+		const std::vector <u32> memory_pattern =
+		{
+			0xebfa0830, 0xe5c47102, 0xecbd8b02, 0xe8bd81f0
+		};
+
+		u32 mem_ptr = Utils::Search<u32>(0x00100000, 0x00400000, memory_pattern);
+		
+		if (mem_ptr)
+		{
+			OSD::Notify(Utils::Format("%p", mem_ptr));
+		}
+		else
+		{
+			OSD::Notify("aspect ratio var not found!");
+			entry->Disable();
+			return;
+		}
+
+		mem_ptr += 16;
+		svcInvalidateEntireInstructionCache();
+
+		// overwrite aspect ratio var with 16/9
+		Process::Write32(mem_ptr, 0x3fe38e39);
+	}
+
+	if (!entry->IsActivated())
+	{
+		const std::vector <u32> memory_pattern =
+		{
+			0xebfa0830, 0xe5c47102, 0xecbd8b02, 0xe8bd81f0
+		};
+
+		u32 mem_ptr = Utils::Search<u32>(0x00100000, 0x00400000, memory_pattern);
+
+		if (mem_ptr)
+		{
+			OSD::Notify(Utils::Format("%p", mem_ptr));
+		}
+		else
+		{
+			OSD::Notify("aspect ratio var not found!");
+			return;
+		}
+
+		mem_ptr += 16;
+		svcInvalidateEntireInstructionCache();
+
+		// restore original floating point value
+		Process::Write32(mem_ptr, 0x3fd55555);
 	}
 }

@@ -23,9 +23,12 @@ struct PACKED player_structure
 	float miniturbo;      // 
 	char  data_7[0x20];   // 
 	float player_speed;   // 
-	char  data_8[0x6c];   // 
+	float data_float_1;   // 
+	char  data_8[0x68];   // 
 	char  boost_duration; // 
-	char  data_9[0x24];   // 
+	char  data_9[0x6];    // 
+	float boost_speed;    // 
+	char  data_10[0x1c];  // 
 	bool  boosting;       // 
 };
 
