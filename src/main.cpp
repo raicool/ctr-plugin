@@ -70,20 +70,26 @@ void init_menu(PluginMenu& menu)
 {
     menu += new MenuEntry("Info", info);
     menu += new MenuEntry("Replay", replay_ghost, "Time trial ghost");
-    menu += new MenuEntry("16:9 Aspect Ratio", new_aspect_ratio, "Sets 3d engine's aspect ratio to a custom ratio (anything not rendered by citro3d engine will not be affected)");
-    menu += new MenuEntry("Replay Old", replay_ghost_old, "darkflare's old buggy live replay code");
-    //menu += new MenuEntry("Always Save Replay", ghost_enable_overwrite, "Always allows new ghosts to being saved, even if its slower than the fastest time");
     menu += new MenuEntry("Never Save Replay", ghost_disable_overwrite, "Disables new ghosts from being saved");
+    //menu += new MenuEntry("Always Save Replay", ghost_enable_overwrite, "Always allows new ghosts to being saved, even if its slower than the fastest time");
     menu += new MenuEntry("Hide Ghost", ghost_hide, "Hide Ghost");
     menu += new MenuEntry("Disable Music", disable_music, "More accurately, it disables the loading of any .bcstm streams, sequence midis like results music will still play");
+    menu += new MenuEntry("Custom Aspect Ratio", new_aspect_ratio, "Sets 3d engine's aspect ratio to a custom ratio (anything not rendered by 3d engine will not be affected unfortunately)");
     //menu += new MenuEntry("Screen Capture", record, "test screen capture, laggy");
+
+    if (auto misc = new MenuFolder("Misc"))
+    {
+        *misc += new MenuEntry("Replay Old", replay_ghost_old, "darkflare's old buggy live replay code");
+
+        menu += misc;
+    }
 }
 
 namespace CTRPluginFramework
 {
     int main(void)
     {
-        PluginMenu* menu = new PluginMenu("TAS Plugin", 1, 2, 4, "TAS Plugin");
+        PluginMenu* menu = new PluginMenu("TAS Plugin", 1, 2, 41, "TAS Plugin");
 
         menu->SynchronizeWithFrame(true);
 
