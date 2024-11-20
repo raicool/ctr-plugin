@@ -7,29 +7,32 @@
 */
 struct PACKED player_structure
 {
-	char  data_1[0x20];   // 
-	float angle;          //
-	float player_x;       // 
-	float player_y;       // 
-	float player_z;       // 
-	char  data_2[0xd0];   // 
-	int   data_int_1;     // 
-	int   data_int_2;     // 
-	char  data_3[0xc0c];  // 
-	char  ground_type_id; // 
-	char  data_4[0x33];   // 
-	int   player_airtime; // 
-	char  data_5[0x1bc];  // 
-	float miniturbo;      // 
-	char  data_7[0x20];   // 
-	float player_speed;   // 
-	float data_float_1;   // 
-	char  data_8[0x68];   // 
-	char  boost_duration; // 
-	char  data_9[0x6];    // 
-	float boost_speed;    // 
-	char  data_10[0x1c];  // 
-	bool  boosting;       // 
+	char  data_1[0x20];   // 0x000 - 0x020
+	float angle;          // 0x021 - 0x024
+	float player_x;       // 0x025 - 0x028
+	float player_y;       // 0x029 - 0x02c
+	float player_z;       // 0x02d - 0x030
+	char  data_2[0xd0];   // 0x031 - 0x100
+	int   data_int_1;     // 0x101 - 0x104
+	int   data_int_2;     // 0x105 - 0x108
+	char  data_3[0xc0c];  // 0x109 - 0xd1c
+	char  ground_type_id; // 0xd1d - 0xd1d
+	char  data_4[0x33];   // 0xd1e - 0xd50
+	int   player_airtime; // 0xd51 - 0xd54
+	char  data_5[0x1bc];  // 0xd55 - 0xf10
+	float miniturbo;      // 0xf11 - 0xf14
+	char  data_7[0x20];   // 0xf15 - 0xf34
+	float player_speed;   // 0xf35 - 0xf38
+	float data_float_1;   // 0xf39 - 0xf3c
+	char  data_8[0x68];   // 0xf3d - 0xfa4
+	char  boost_duration; // 0xfa5 - 0xfa5
+	char  data_9[0x6];    // 0xfa6 - 0xfab
+	float boost_speed;    // 0xfac - 0xfaf
+	char  data_10[0x1c];  // 0xfb0 - 0xfcb
+	bool  boosting;       // 0xfcc - 0xfcc
+	char  data_11[0x23];  // 0xfcd - 0xfef
+	short trick;          // 0xff0 - 0xff1
+
 };
 
 /*

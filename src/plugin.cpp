@@ -112,28 +112,31 @@ void render_info()
 		}
 	}
 
-	screen.Draw(Utils::Format("%f km/h", player_kmh), 10, 150);
+	screen.Draw(Utils::Format("%f km/h", player_kmh), 10, 130);
 
 	kmh_delta = player_kmh - player_old_kmh;
 
 	if (kmh_delta == 0)
 	{
-		screen.Draw(Utils::Format("( %f)", kmh_delta), 10, 160, Color::Gray);
+		screen.Draw(Utils::Format("( %f)", kmh_delta), 10, 140, Color::Gray);
 	}
 	else if (kmh_delta >= 0)
 	{
-		screen.Draw(Utils::Format("(+%f)", kmh_delta), 10, 160, Color::ForestGreen);
+		screen.Draw(Utils::Format("(+%f)", kmh_delta), 10, 140, Color::ForestGreen);
 	}
 	else
 	{
-		screen.Draw(Utils::Format("(%f)", kmh_delta), 10, 160, Color::Maroon);
+		screen.Draw(Utils::Format("(%f)", kmh_delta), 10, 140, Color::Maroon);
 	}
 
-	screen.Draw(Utils::Format("Frame %i", input_frame_count), 10, 180, Color::SkyBlue);
-	screen.Draw(Utils::Format("Air : %i", player->player_airtime), 10, 190, (player->player_airtime == 0) ? Color::Red : Color::LimeGreen);
-	screen.Draw(Utils::Format("Boost : %i", player->boost_duration), 10, 200, player->boosting ? Color::LimeGreen : Color::Red);
-	screen.Draw(Utils::Format("KCL Type : %s", kcl_type_name_from_char(player->ground_type_id)), 10, 210, Color::DeepSkyBlue);
-	screen.Draw(Utils::Format("(%.3f, %.3f, %.3f)", player->player_x, player->player_y, player->player_z), 10, 220, Color::DodgerBlue);
+	//screen.Draw(Utils::Format("Trick %i", player->trick), 10, 150, Color::SkyBlue);
+	screen.Draw(Utils::Format("Frame %i", input_frame_count), 10, 160, Color::SkyBlue);
+	screen.Draw(Utils::Format("Air : %i", player->player_airtime), 10, 170, (player->player_airtime == 0) ? Color::Red : Color::LimeGreen);
+	screen.Draw(Utils::Format("Boost : %i", player->boost_duration), 10, 180, player->boosting ? Color::LimeGreen : Color::Red);
+	screen.Draw(Utils::Format("KCL : %s", kcl_type_name_from_char(player->ground_type_id)), 10, 190, Color::DeepSkyBlue);
+	screen.Draw(Utils::Format("X : %.3f", player->player_x), 10, 200, Color::DodgerBlue);
+	screen.Draw(Utils::Format("Y : %.3f", player->player_y), 10, 210, Color::DodgerBlue);
+	screen.Draw(Utils::Format("Z : %.3f", player->player_z), 10, 220, Color::DodgerBlue);
 
 	miniturbo_old = player->miniturbo;
 	player_old_kmh = player_kmh;
@@ -402,7 +405,36 @@ void new_aspect_ratio(MenuEntry* entry)
 		svcInvalidateEntireInstructionCache();
 
 		// overwrite aspect ratio var with 16/9
-		Process::Write32(mem_ptr, 0x3fe38e39);
+		std::vector<std::string> strings = 
+		{
+			"16:10 (Original)",
+			"4:3",
+			"16:9",
+			"21:9"
+		};
+
+		Keyboard aspect_ratio_option("Select aspect ratio", strings);
+		u32 selection = aspect_ratio_option.Open();
+
+		switch (selection)
+		{
+		case 0:
+			Process::Write32(mem_ptr, 0x3fcccccd); // 16:10 (Original)
+			break;
+		case 1:
+			Process::Write32(mem_ptr, 0x3faaaaab); // 4:3
+			break;
+		case 2:
+			Process::Write32(mem_ptr, 0x3fe38e39); // 16:9
+			break;
+		case 3:
+			Process::Write32(mem_ptr, 0x40155555); // 21:9
+			break;
+		default:
+			OSD::Notify("invalid option!", Color::White, Color::Maroon);
+			entry->Disable();
+			break;
+		}
 	}
 
 	if (!entry->IsActivated())
@@ -427,7 +459,7 @@ void new_aspect_ratio(MenuEntry* entry)
 		mem_ptr += 16;
 		svcInvalidateEntireInstructionCache();
 
-		// restore original floating point value
+		// restore original floating point value (1.66667)
 		Process::Write32(mem_ptr, 0x3fd55555);
 	}
 }
