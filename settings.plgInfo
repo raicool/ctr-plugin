@@ -3,7 +3,7 @@ Author: Rai
 Version: # Plugin version
     Major: 1
     Minor: 2
-    Revision: 2
+    Revision: 4
 
 Targets: # Low TitleId of games which are compatibles with this plugin (0 for all)
 
@@ -12,15 +12,7 @@ Title: TAS Plugin
 Summary: various mk7 tools
 
 Description: |
-  This plugin gives you access to a set of tools to edit your games
-
-  Features:
-    - Memory searcher
-    - Hex Editor
-    - Code creator
-    - Code import from file
-    - Action Replay engine with extra capabilities
-    - Super fast screenshot engine
+  this plugin gives you access to a set of tools to tas in mario kart 7
 
 Compatibility: Any
 MemorySize: 5MiB
