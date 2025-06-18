@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.8)
-project("ctr-plugin" LANGUAGES C CXX ASM)
 
 set(CMAKE_CXX_STANDARD 23)
+
+project("ctr-plugin" LANGUAGES C CXX ASM)
+
 set(CMAKE_EXE_LINKER_FLAGS "-L${CTR_ROOT}/lib -L${DEVKITPRO}/portlibs/3ds/lib -L${DEVKITPRO}/libctrpf/lib -T ${PROJECT_SOURCE_DIR}/3gx.ld -Os -Wl,-Map,${PROJECT_NAME}.map,--gc-sections")
 set(CMAKE_CXX_STANDARD_LIBRARIES "-lm -lctrpf -lctru")
 
