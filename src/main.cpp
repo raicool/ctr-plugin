@@ -89,7 +89,7 @@ namespace CTRPluginFramework
 {
     int main(void)
     {
-        PluginMenu* menu = new PluginMenu("TAS Plugin", 1, 2, 41, "TAS Plugin");
+        PluginMenu* menu = new PluginMenu("TAS Plugin", 1, 2, 5, "TAS Plugin");
 
         menu->SynchronizeWithFrame(true);
 
