@@ -4,8 +4,13 @@
 #include <CTRPluginFramework.hpp>
 
 #include "csvc.h"
+#include "vertex.h"
+#include "mk7structs.h"
+
+#include "disp.h"
 #include "struct.h"
 #include "util.h"
+
 
 #include "sead/include/basis/seadTypes.h"
 #include "sead/include/math/seadVector.hpp"
@@ -61,6 +66,24 @@ __attribute__((naked)) void debug_hook_callback()
 	);
 }
 
+__attribute__((naked)) void tas_code_callback_5eba18()
+{
+	asm volatile
+	(
+		"cmp   r5, #0          \n"
+		"strne r1, [pc, #0x1c] \n"
+		"streq r1, [pc, #0x1c] \n"
+		"streq r0, [pc, #0x1c] \n"
+		"ldreq r1, [pc, #0x10] \n"
+		"cmp   r1, #0          \n"
+		"ldreq r1, [pc, #0xc]  \n"
+		"str   r1, [r0, #0xe4] \n"
+		"bx    lr              \n"
+		".word 0x00000000      \n"
+		".word 0x00000000      \n"
+	);
+}
+
 void render_info()
 {
 	static float player_old_x;
@@ -113,6 +136,10 @@ void render_info()
 	}
 
 	screen.Draw(Utils::Format("%f km/h", player_kmh), 10, 130);
+	//screen.Draw(Utils::Format("Yaw Int : %f\xb0", radian_to_degrees(player->yaw_strength_internal)), 10, 90, Color::DeepSkyBlue);
+	//screen.Draw(Utils::Format("Yaw Ext : %f\xb0", radian_to_degrees(player->yaw_strength_external)), 10, 80, Color::DodgerBlue);
+	screen.Draw(Utils::Format("YV Int : %f", player->random_float * 10.376756f), 10, 70, Color::Orange);
+
 
 	kmh_delta = player_kmh - player_old_kmh;
 
@@ -137,19 +164,22 @@ void render_info()
 	screen.Draw(Utils::Format("X : %.3f", player->player_x), 10, 200, Color::DodgerBlue);
 	screen.Draw(Utils::Format("Y : %.3f", player->player_y), 10, 210, Color::DodgerBlue);
 	screen.Draw(Utils::Format("Z : %.3f", player->player_z), 10, 220, Color::DodgerBlue);
+	
 
 	miniturbo_old = player->miniturbo;
 	player_old_kmh = player_kmh;
 	player_old_x = player->player_x;
 	player_old_y = player->player_y;
 	player_old_z = player->player_z;
+
+	render_player_yaw(&screen, player);
 }
 
 void info(MenuEntry* entry)
 {
 	if (entry->WasJustActivated())
 	{
-		if (!System::IsCitra())
+ 		if (!System::IsCitra())
 		{
 			OSD::Notify("info is only available if using citra!", Color::White, Color::Maroon);
 			entry->Disable();
@@ -420,15 +450,19 @@ void new_aspect_ratio(MenuEntry* entry)
 		{
 		case 0:
 			Process::Write32(mem_ptr, 0x3fd55555); // 16:10 (Original)
+			//Process::Write32(mem_ptr + 4, 0x3fd55555); // 16:10 (Original)
 			break;
 		case 1:
 			Process::Write32(mem_ptr, 0x3faaaaab); // 4:3
+			//Process::Write32(mem_ptr + 4, 0x3faaaaab); // 4:3
 			break;
 		case 2:
 			Process::Write32(mem_ptr, 0x3fe38e39); // 16:9
+			//Process::Write32(mem_ptr + 4, 0x3fe38e39); // 16:9
 			break;
 		case 3:
 			Process::Write32(mem_ptr, 0x40155555); // 21:9
+			//Process::Write32(mem_ptr + 4, 0x40155555); // 21:9
 			break;
 		default:
 			OSD::Notify("invalid option!", Color::White, Color::Maroon);
@@ -461,5 +495,36 @@ void new_aspect_ratio(MenuEntry* entry)
 
 		// restore original floating point value (1.66667)
 		Process::Write32(mem_ptr, 0x3fd55555);
+	}
+}
+
+void test_popup(MenuEntry* entry)
+{
+	if (entry->WasJustActivated())
+	{
+		// first 6 instructions of UI::UnitTextPane::create(nw::lyt::Pane *, wchar_t *, int, bool)
+		const std::vector <u32> memory_pattern =
+		{
+			0xe92d4fff, 0xe1a04000, 0xe1b05001, 0xe1a0b001, 0xe1a0b001, 0xe59f64a0
+		};
+
+		u32 mem_ptr = Utils::Search<u32>(0x00100000, 0x00400000, memory_pattern);
+
+		if (mem_ptr)
+		{
+			//OSD::Notify(Utils::Format("%p", mem_ptr));
+		}
+		else
+		{
+			OSD::Notify("aspect ratio var not found!", Color::White, Color::Maroon);
+			entry->Disable();
+			return;
+		}
+
+		nw::lyt::Pane new_pane;
+		const wchar_t* text = L"hello!";
+		UI::UnitTextPane::create(&new_pane, text, 0, 0, false);
+
+		entry->Disable();
 	}
 }
