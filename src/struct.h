@@ -12,7 +12,8 @@ struct PACKED player_structure
 	float player_x;       // 0x025 - 0x028
 	float player_y;       // 0x029 - 0x02c
 	float player_z;       // 0x02d - 0x030
-	char  data_2[0xc];
+	char  data_2[0x8];
+	float random_float2;
 	float random_float;
 	char  data_3[0xc0];   // 0x031 - 0x100
 	int   data_int_1;     // 0x101 - 0x104
