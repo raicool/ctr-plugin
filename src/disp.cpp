@@ -33,7 +33,7 @@ void render_player_yaw(const Screen* screen, player_structure* player)
 
 		for (int j = 0; j <= 9; j++)
 		{
-			screen->DrawPixel(((u32)end_x - 1) + (j % 3), ((u32)end_y - 1) + sead::MathCalcCommon<f32>::floor(j / 3.0f), Color::SkyBlue);
+			screen->DrawPixel(((u32)end_x - 1) + (j % 3), ((u32)end_y - 1) + sead::MathCalcCommon<f32>::floor(j / 3.0f), Color::Maroon);
 		}
 	}
 }
