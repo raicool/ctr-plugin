@@ -36,6 +36,7 @@ float dist2f(const sead::Vector2f p1, const sead::Vector2f p2);
 float dist3f(const sead::Vector3f p1, const sead::Vector3f p2);
 
 u32 get_input_frame();
+float radian_to_degrees(float rad);
 
 u32 ARMBranch(const void* src, const void* dst);
 u32 ARMBranchLink(const void* src, const void* dst);

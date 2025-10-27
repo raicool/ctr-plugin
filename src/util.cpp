@@ -136,6 +136,11 @@ float dist3f(const sead::Vector3f p1, const sead::Vector3f p2)
 	return sead::MathCalcCommon<f32>::sqrt((x * x) + (y * y) + (z * z));
 }
 
+float radian_to_degrees(float rad)
+{
+	return rad * (180.0 / M_PI);
+}
+
 u32 get_input_frame()
 {
 	u32 ptr = 0;
