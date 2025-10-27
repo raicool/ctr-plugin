@@ -3,3 +3,6 @@
 /.git
 /.vs
 /.vscode
+/CMakeFiles
+
+CMakeCache.txt
