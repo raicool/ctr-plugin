@@ -31,10 +31,14 @@ mkdir -p bin/cache
 cd bin/cache
 
 if [[ "$*" != *"nobuild"* ]]; then
-	cmake\
+	${DEVKITPRO}/msys2/usr/bin/cmake.exe\
 	 -DCMAKE_TOOLCHAIN_FILE:PATH=${DEVKITPRO}/cmake/3DS.cmake\
 	 -DCMAKE_RUNTIME_OUTPUT_DIRECTORY:PATH=../\
 	 -DCMAKE_BINARY_DIR=../\
+	 -DCMAKE_MAKE_PROGRAM=${DEVKITPRO}/msys2/usr/bin/make.exe\
+	 -DCMAKE_C_COMPILER:PATH=${DEVKITARM}/bin/arm-none-eabi-gcc.exe\
+	 -DCMAKE_CXX_COMPILER:PATH=${DEVKITARM}/bin/arm-none-eabi-c++.exe\
+	 -DCMAKE_ASM_COMPILER:PATH=${DEVKITARM}/bin/arm-none-eabi-gcc.exe\
 	 ../../CMakeLists.txt
 	 
 	make
@@ -50,6 +54,7 @@ fi
 
 # Create .3gx from built elf file
 if [ $make_ret -eq 0 ]; then
+	echo -e "${Blue}Building 3gx...${Reset}"
 	${DEVKITPRO}/tools/bin/3gxtool.exe -s bin/ctr-plugin.elf settings.plgInfo bin/ctr-plugin.3gx
 fi	
 

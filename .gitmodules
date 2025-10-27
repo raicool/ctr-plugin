@@ -4,3 +4,6 @@
 [submodule "include/libctru"]
 	path = include/libctru
 	url = https://github.com/devkitPro/libctru
+[submodule "include/mk7-memory"]
+	path = include/mk7-memory
+	url = https://github.com/Anto726/MK7-Memory.git
