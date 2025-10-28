@@ -1,4 +1,7 @@
 # ctr-plugin
+[![Release](https://badgen.net/github/release/raicool/ctr-plugin)](https://github.com/raicool/ctr-plugin/releases)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/raicool/ctr-plugin/graphs/commit-activity)
+[![GitHub last commit](https://badgen.net/github/last-commit/raicool/ctr-plugin/main)](https://github.com/raicool/ctr-plugin/commits/main)
 
 Basic Mario Kart 7 plugin that citra supports
 
@@ -27,6 +30,7 @@ Basic Mario Kart 7 plugin that citra supports
 ## Prerequisites 
   - This plugin requires the most recent version of CTRPluginFramework installed with devkitPro (https://gitlab.com/thepixellizeross/ctrpluginframework/)
     - see their readme for how to install it or smth
+  - Citro3D is also required to be installed (https://github.com/devkitPro/citro3d)
 ## Windows
   - launch devkitPro's msys2 shell from devkitPro/msys2/msys2_shell.bat
   - set directory to root of ctr-plugin
