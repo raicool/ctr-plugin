@@ -178,8 +178,6 @@ void render_info()
 	screen.Draw(CTRPluginFramework::Utils::Format("X : %.3f", player->player_x), 10, 200, CTRPluginFramework::Color::DodgerBlue);
 	screen.Draw(CTRPluginFramework::Utils::Format("Y : %.3f", player->player_y), 10, 210, CTRPluginFramework::Color::DodgerBlue);
 	screen.Draw(CTRPluginFramework::Utils::Format("Z : %.3f", player->player_z), 10, 220, CTRPluginFramework::Color::DodgerBlue);
-	screen.Draw(CTRPluginFramework::Utils::Format("debug: %i", instant_finish_callback_called), 10, 230, CTRPluginFramework::Color::DodgerBlue);
-	
 
 	miniturbo_old = player->miniturbo;
 	player_old_kmh = player_kmh;
@@ -274,7 +272,7 @@ void instant_finish(CTRPluginFramework::MenuEntry* entry)
 		return;
 	}
 
-	if (entry->IsActivated() == false)
+	if (entry->IsActivated() == false && instant_finish_callback_called == false)
 	{
 		CTRPluginFramework::OSD::Notify("instant_finish_callback hook disabled!", Color::LimeGreen);
 		instant_finish_hook.Disable();
