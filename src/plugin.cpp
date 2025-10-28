@@ -82,6 +82,21 @@ __attribute__((naked)) void tas_code_callback_5eba18()
 	);
 }
 
+static bool instant_finish_callback_called = false;
+__attribute__((naked)) void instant_finish_callback_4640e4()
+{
+	asm volatile
+	(
+		"push  {r5}    \n"
+		"ldr r5, %0    \n"
+		"mov r5, #0xff \n"
+		"str r5, %0    \n"
+		"pop  {r5}     \n"
+		"bx  lr        \n"
+		: "=m" (instant_finish_callback_called)
+	);
+}
+
 void render_info()
 {
 	static float player_old_x;
@@ -163,6 +178,7 @@ void render_info()
 	screen.Draw(CTRPluginFramework::Utils::Format("X : %.3f", player->player_x), 10, 200, CTRPluginFramework::Color::DodgerBlue);
 	screen.Draw(CTRPluginFramework::Utils::Format("Y : %.3f", player->player_y), 10, 210, CTRPluginFramework::Color::DodgerBlue);
 	screen.Draw(CTRPluginFramework::Utils::Format("Z : %.3f", player->player_z), 10, 220, CTRPluginFramework::Color::DodgerBlue);
+	screen.Draw(CTRPluginFramework::Utils::Format("debug: %i", instant_finish_callback_called), 10, 230, CTRPluginFramework::Color::DodgerBlue);
 	
 
 	miniturbo_old = player->miniturbo;
@@ -217,6 +233,52 @@ void info(CTRPluginFramework::MenuEntry* entry)
 	if (!player || !is_racing() || !entry->IsActivated())
 	{
 		input_frame_count = 0;
+	}
+}
+
+void instant_finish(CTRPluginFramework::MenuEntry* entry)
+{
+	if (entry->WasJustActivated())
+	{
+		// beginning instructions of RaceSys::TimeAttackManager::calcRace()
+		const std::vector <u32> func_pattern =
+		{
+			0xe92d4070, 0xe1a04000, 0xeb0000e0, 0xe3a00f7a, 0xe59414c4, 0xe19000b4, 0xe3a05001, 0xe1510000
+		};
+
+		u32 func_ptr = CTRPluginFramework::Utils::Search<u32>(0x00100000, 0x00400000, func_pattern);
+		func_ptr += 52;
+
+		instant_finish_hook.Initialize(func_ptr, reinterpret_cast<u32>(instant_finish_callback_4640e4));
+		instant_finish_hook.SetFlags(USE_LR_TO_RETURN);
+		instant_finish_callback_called = false;
+
+		if (instant_finish_hook.Enable() == CTRPluginFramework::HookResult::Success)
+		{
+			CTRPluginFramework::OSD::Notify("instant_finish hook enabled!", Color::LimeGreen);
+			CTRPluginFramework::OSD::Notify(CTRPluginFramework::Utils::Format("%p", func_ptr));
+		}
+		else
+		{
+			CTRPluginFramework::OSD::Notify("instant_finish hook failed to enable!", Color::Red);
+			instant_finish_hook.Disable();
+			entry->Disable();
+		}
+	}
+
+	if (instant_finish_callback_called)
+	{
+		CTRPluginFramework::OSD::Notify("instant_finish_callback was called!", Color::LimeGreen);
+		instant_finish_hook.Disable();
+		entry->Disable();
+		return;
+	}
+
+	if (entry->IsActivated() == false)
+	{
+		CTRPluginFramework::OSD::Notify("instant_finish_callback hook disabled!", Color::LimeGreen);
+		instant_finish_hook.Disable();
+		return;
 	}
 }
 

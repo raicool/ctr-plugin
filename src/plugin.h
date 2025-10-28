@@ -8,6 +8,7 @@
 using namespace CTRPluginFramework;
 
 static player_structure* player;
+static Hook instant_finish_hook;
 static Hook live_replay_hook;
 static Hook overwrite_ghost_alpha_hook;
 static Hook debug_hook;
@@ -18,9 +19,11 @@ static u32 data;
 __attribute__((naked)) void change_ghost_alpha();
 __attribute__((naked)) void live_replay();
 __attribute__((naked)) void debug_hook_callback();
+__attribute__((naked)) void instant_finish_callback_4640e4();
 
 // ctrpf menu entries
 void info(MenuEntry* entry);
+void instant_finish(MenuEntry* entry);
 void replay_ghost(MenuEntry* entry);
 void replay_ghost_old(MenuEntry* entry);
 void ghost_disable_overwrite(MenuEntry* entry);

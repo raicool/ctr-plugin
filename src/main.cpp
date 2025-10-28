@@ -71,7 +71,8 @@ void init_menu(PluginMenu& menu)
 	//menu += new MenuEntry("Test", test_popup);
 	menu += new MenuEntry("Info", info);
     menu += new MenuEntry("Replay", replay_ghost, "Time trial ghost");
-    menu += new MenuEntry("Never Save Replay", ghost_disable_overwrite, "Disables new ghosts from being saved");
+	menu += new MenuEntry("Never Save Replay", ghost_disable_overwrite, "Disables new ghosts from being saved");
+	menu += new MenuEntry("Instant Race Finish", instant_finish, "Instantly finishes any time trials race. disables itself once RaceSys::TimeAttackManager::calcRace() is called");
     //menu += new MenuEntry("Always Save Replay", ghost_enable_overwrite, "Always allows new ghosts to being saved, even if its slower than the fastest time");
     menu += new MenuEntry("Hide Ghost", ghost_hide, "Hide Ghost");
     menu += new MenuEntry("Disable Music", disable_music, "More accurately, it disables the loading of any .bcstm streams, sequence midis like results music will still play");
